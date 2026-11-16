@@ -19,6 +19,7 @@ namespace YMH219_KeyEventLogger
             KeyDown += Form1_KeyDown;
 
             UpdateStatus();
+            UpdateStats();
         }
 
         private void BtnStart_Click(object? sender, EventArgs e)
@@ -46,6 +47,7 @@ namespace YMH219_KeyEventLogger
 
             // Liste uzayınca otomatik olarak en alta kaydır
             lstLog.TopIndex = lstLog.Items.Count - 1;
+            UpdateStats();
         }
 
         // Ekrandaki ve hafızadaki kayıtları siler
@@ -64,6 +66,7 @@ namespace YMH219_KeyEventLogger
             {
                 records.Clear();
                 lstLog.Items.Clear();
+                UpdateStats();
             }
         }
 
@@ -102,9 +105,35 @@ namespace YMH219_KeyEventLogger
             }
         }
 
+        // Toplam tuş sayısını ve en çok basılan 3 tuşu gösterir
+        private void UpdateStats()
+        {
+            if (records.Count == 0)
+            {
+                lblStats.Text = "Henüz kayıt yok.";
+                return;
+            }
+
+            var topKeys = records
+                .GroupBy(r => r.Key)                 // Aynı tuşları grupla
+                .OrderByDescending(g => g.Count())   // En kalabalık grup en üste
+                .Take(3);                            // İlk 3'ü al
+
+            string text = $"Toplam: {records.Count} tuş\n\nEn sık basılanlar:\n";
+            int rank = 1;
+            foreach (var group in topKeys)
+            {
+                text += $"{rank}. {group.Key}  ({group.Count()} kez)\n";
+                rank++;
+            }
+
+            lblStats.Text = text;
+        }
+
         // Durum yazısını ve butonları güncel duruma göre ayarlar
         private void UpdateStatus()
         {
+
             if (isRecording)
             {
                 lblStatus.Text = "Durum: Kayıt yapılıyor";
