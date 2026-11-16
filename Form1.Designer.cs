@@ -29,8 +29,9 @@
             // 
             // lstLog
             // 
-            lstLog.BackColor = Color.FromArgb(30, 30, 30);
-            lstLog.ForeColor = Color.FromArgb(0, 230, 118);
+            lstLog.BackColor = Color.FromArgb(252, 228, 236);
+            lstLog.ForeColor = Color.FromArgb(136, 14, 79);
+            lstLog.BorderStyle = BorderStyle.FixedSingle;
             lstLog.Font = new Font("Consolas", 10F);
             lstLog.FormattingEnabled = true;
             lstLog.Location = new Point(12, 12);
@@ -115,7 +116,7 @@
             lblStatsTitle.Location = new Point(470, 212);
             lblStatsTitle.Name = "lblStatsTitle";
             lblStatsTitle.TabIndex = 6;
-            lblStatsTitle.Text = "📊 İstatistik";
+            lblStatsTitle.Text = "İstatistik";
             // 
             // lblStats
             // 

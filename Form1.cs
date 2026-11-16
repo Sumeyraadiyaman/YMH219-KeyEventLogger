@@ -8,15 +8,22 @@ namespace YMH219_KeyEventLogger
         // Yakalanan bütün tuş kayıtları
         private readonly List<KeyRecord> records = new List<KeyRecord>();
 
+        // Buton renkleri
+        private readonly Color startColor = Color.FromArgb(76, 175, 80);    // Yeşil
+        private readonly Color stopColor = Color.FromArgb(229, 57, 53);     // Kırmızı
+        private readonly Color disabledColor = Color.FromArgb(200, 200, 200); // Gri
+
         public Form1()
         {
             InitializeComponent();
 
             // Olayları metotlara bağlıyoruz
             btnStart.Click += BtnStart_Click;
+            btnStop.Click += BtnStop_Click;
             btnClear.Click += BtnClear_Click;
             btnSave.Click += BtnSave_Click;
             KeyDown += Form1_KeyDown;
+            KeyPress += Form1_KeyPress;
 
             UpdateStatus();
             UpdateStats();
@@ -47,6 +54,25 @@ namespace YMH219_KeyEventLogger
 
             // Liste uzayınca otomatik olarak en alta kaydır
             lstLog.TopIndex = lstLog.Items.Count - 1;
+            UpdateStats();
+        }
+
+        // KeyDown'dan hemen sonra gelir; tuştan çıkan gerçek karakteri verir
+        private void Form1_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            if (!isRecording || records.Count == 0)
+                return;
+
+            // Enter, Backspace, Space gibi görünmeyen karakterleri atla
+            if (char.IsControl(e.KeyChar) || char.IsWhiteSpace(e.KeyChar))
+                return;
+
+            // Son kaydı bul ve gerçek karakteri ekle
+            KeyRecord lastRecord = records[records.Count - 1];
+            lastRecord.Character = e.KeyChar;
+
+            // Listedeki son satırı güncelle
+            lstLog.Items[lstLog.Items.Count - 1] = lastRecord.ToString();
             UpdateStats();
         }
 
@@ -115,7 +141,7 @@ namespace YMH219_KeyEventLogger
             }
 
             var topKeys = records
-                .GroupBy(r => r.Key)                 // Aynı tuşları grupla
+                .GroupBy(r => r.DisplayName)         // Aynı tuşları grupla
                 .OrderByDescending(g => g.Count())   // En kalabalık grup en üste
                 .Take(3);                            // İlk 3'ü al
 
@@ -133,7 +159,6 @@ namespace YMH219_KeyEventLogger
         // Durum yazısını ve butonları güncel duruma göre ayarlar
         private void UpdateStatus()
         {
-
             if (isRecording)
             {
                 lblStatus.Text = "Durum: Kayıt yapılıyor";
@@ -147,6 +172,10 @@ namespace YMH219_KeyEventLogger
 
             btnStart.Enabled = !isRecording; // Kayıt açıkken Başlat pasif
             btnStop.Enabled = isRecording;   // Kayıt kapalıyken Durdur pasif
+
+            // Pasif buton gri, aktif buton kendi renginde
+            btnStart.BackColor = isRecording ? disabledColor : startColor;
+            btnStop.BackColor = isRecording ? stopColor : disabledColor;
         }
     }
 }
