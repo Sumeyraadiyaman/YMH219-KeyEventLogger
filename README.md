@@ -17,7 +17,7 @@ Nesne Tabanlı Programlama (YMH219) dersi kapsamında geliştirilmiş, eğitsel 
    ```bash
    git clone https://github.com/Sumeyraadiyaman/YMH219-KeyEventLogger.git
    ```
-2. `YMH219-KeyEventLogger.sln` dosyasını Visual Studio 2022 ile açın.
+2. `YMH219-KeyEventLogger.slnx` dosyasını Visual Studio 2022 ile açın.
 3. Visual Studio'da ".NET desktop development" iş yükünün kurulu olduğundan emin olun.
 4. `F5` tuşu ile uygulamayı çalıştırın.
 
