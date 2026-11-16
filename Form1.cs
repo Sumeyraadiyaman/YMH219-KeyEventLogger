@@ -14,7 +14,8 @@ namespace YMH219_KeyEventLogger
 
             // Olayları metotlara bağlıyoruz
             btnStart.Click += BtnStart_Click;
-            btnStop.Click += BtnStop_Click;
+            btnClear.Click += BtnClear_Click;
+            btnSave.Click += BtnSave_Click;
             KeyDown += Form1_KeyDown;
 
             UpdateStatus();
@@ -45,6 +46,60 @@ namespace YMH219_KeyEventLogger
 
             // Liste uzayınca otomatik olarak en alta kaydır
             lstLog.TopIndex = lstLog.Items.Count - 1;
+        }
+
+        // Ekrandaki ve hafızadaki kayıtları siler
+        private void BtnClear_Click(object? sender, EventArgs e)
+        {
+            if (records.Count == 0)
+                return; // Silinecek bir şey yoksa çık
+
+            DialogResult answer = MessageBox.Show(
+                "Tüm kayıtlar silinecek. Emin misiniz?",
+                "Temizle",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (answer == DialogResult.Yes)
+            {
+                records.Clear();
+                lstLog.Items.Clear();
+            }
+        }
+
+        // Kayıtları kullanıcının seçtiği .txt dosyasına yazar
+        private void BtnSave_Click(object? sender, EventArgs e)
+        {
+            if (records.Count == 0)
+            {
+                MessageBox.Show("Kaydedilecek kayıt yok.", "Bilgi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Metin dosyası (*.txt)|*.txt";
+            dialog.FileName = $"keylog_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return; // Kullanıcı vazgeçtiyse çık
+
+            try
+            {
+                using StreamWriter writer = new StreamWriter(dialog.FileName);
+                foreach (KeyRecord record in records)
+                {
+                    writer.WriteLine(record.ToString());
+                }
+
+                MessageBox.Show("Kayıtlar kaydedildi:\n" + dialog.FileName, "Başarılı",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Dosya kaydedilemedi:\n" + ex.Message, "Hata",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Durum yazısını ve butonları güncel duruma göre ayarlar
