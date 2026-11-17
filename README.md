@@ -6,7 +6,7 @@ Nesne Tabanlı Programlama (YMH219) dersi kapsamında geliştirilmiş, eğitsel 
 
 ## Kullanılan Teknolojiler
 
-- C# / .NET 8
+- C# / .NET 10
 - Windows Forms
 - Visual Studio 2022
 - Ek NuGet paketi kullanılmamıştır
